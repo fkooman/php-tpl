@@ -45,7 +45,7 @@ Then, for example the template `page.php` contains this:
                 <li><?=$this->e($listEntry)?></li>
             <?php endforeach ?>
         </ul>
-    <?php $this->stop() ?>
+    <?php $this->stop('content') ?>
 
 You'd render the template like this:
 
