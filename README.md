@@ -4,7 +4,7 @@ This is a very simple native PHP template engine based on the ideas as found in
 [Plates](http://platesphp.com/). The templates are mostly compatible with 
 Plates templates, so it is easy to switch.
 
-The following features are (not) yet part of Plates, but hopefully are some 
+The following features are not (yet) part of Plates, but hopefully are some 
 time in the future:
 
 - Themes, this is not working 
