@@ -38,16 +38,16 @@ class Template
     /** @var string|null */
     private $activeSectionName = null;
 
-    /** @var array */
+    /** @var array<string,string> */
     private $sectionList = [];
 
-    /** @var array */
+    /** @var array<string,array> */
     private $layoutList = [];
 
-    /** @var array */
+    /** @var array<string,mixed> */
     private $templateVariables = [];
 
-    /** @var array */
+    /** @var array<string,callable> */
     private $callbackList = [];
 
     /**
@@ -61,7 +61,7 @@ class Template
     }
 
     /**
-     * @param array $templateVariables
+     * @param array<string,mixed> $templateVariables
      *
      * @return void
      */
@@ -82,8 +82,8 @@ class Template
     }
 
     /**
-     * @param string $templateName
-     * @param array  $templateVariables
+     * @param string              $templateName
+     * @param array<string,mixed> $templateVariables
      *
      * @return string
      */
@@ -109,8 +109,8 @@ class Template
     }
 
     /**
-     * @param string $templateName
-     * @param array  $templateVariables
+     * @param string              $templateName
+     * @param array<string,mixed> $templateVariables
      *
      * @return string
      */
@@ -160,8 +160,8 @@ class Template
     }
 
     /**
-     * @param string $layoutName
-     * @param array  $templateVariables
+     * @param string              $layoutName
+     * @param array<string,mixed> $templateVariables
      *
      * @return void
      */
@@ -262,14 +262,14 @@ class Template
     /**
      * Format a date.
      *
-     * @param string $d
-     * @param string $f
+     * @param string $dateString
+     * @param string $dateFormat
      *
      * @return string
      */
-    private function d($d, $f)
+    private function d($dateString, $dateFormat)
     {
-        return $this->e(\date_format(new DateTime($d), $f));
+        return $this->e(\date_format(new DateTime($dateString), $dateFormat));
     }
 
     /**
