@@ -230,17 +230,17 @@ class Tpl
     /**
      * Format a date.
      *
-     * @param string $d
-     * @param string $f
+     * @param string $dateString
+     * @param string $dateFormat
      *
      * @return string
      */
-    private function d($d, $f = 'Y-m-d H:i:s')
+    private function d($dateString, $dateFormat = 'Y-m-d H:i:s')
     {
-        $dateTime = new DateTime($d);
+        $dateTime = new DateTime($dateString);
         $dateTime->setTimeZone(new DateTimeZone(date_default_timezone_get()));
 
-        return $this->e(date_format($dateTime, $f));
+        return $this->e(date_format($dateTime, $dateFormat));
     }
 
     /**
