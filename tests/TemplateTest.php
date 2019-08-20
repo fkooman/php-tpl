@@ -105,7 +105,9 @@ class TemplateTest extends TestCase
             [
                 __DIR__.'/tpl',
             ],
-            __DIR__.'/locale/nl1.php'
+            [
+                __DIR__.'/locale/nl1.php',
+            ]
         );
 
         $this->assertSame(
@@ -120,7 +122,9 @@ class TemplateTest extends TestCase
             [
                 __DIR__.'/tpl',
             ],
-            __DIR__.'/locale/nl1.php'
+            [
+                __DIR__.'/locale/nl1.php',
+            ]
         );
 
         $this->assertSame(
@@ -135,7 +139,9 @@ class TemplateTest extends TestCase
             [
                 __DIR__.'/tpl',
             ],
-            __DIR__.'/locale/nl1.php'
+            [
+                __DIR__.'/locale/nl1.php',
+            ]
         );
 
         $this->assertSame(
@@ -150,12 +156,32 @@ class TemplateTest extends TestCase
             [
                 __DIR__.'/tpl',
             ],
-            __DIR__.'/locale/nl1.php'
+            [
+                __DIR__.'/locale/nl1.php',
+            ]
         );
 
         $this->assertSame(
             'Hallo &lt;/body&gt;!',
             \trim($template->render('tpl6', ['userId' => '</body>']))
+        );
+    }
+
+    public function testMTranslationMultipleTranslationFiles()
+    {
+        $template = new Template(
+            [
+                __DIR__.'/tpl',
+            ],
+            [
+                __DIR__.'/locale/nl1.php',
+                __DIR__.'/locale/nl2.php',
+            ]
+        );
+
+        $this->assertSame(
+            'Meer Tekst',
+            \trim($template->render('tpl15', []))
         );
     }
 
