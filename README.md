@@ -50,9 +50,9 @@ Then, for example the template `page.php` contains this:
 You'd render the template like this:
 
     <?php
-    use fkooman\Tpl\Template;
+    use fkooman\Template\Tpl;
 
-    $tpl = new Template(
+    $tpl = new Tpl(
         [
             '/path/to/templates'
         ]
@@ -66,9 +66,9 @@ The first folder points to the "base" template. Additional folders can
 override specific templates (or all of them).
 
     <?php
-    use fkooman\Tpl\Template;
+    use fkooman\Template\Tpl;
 
-    $tpl = new Template(
+    $tpl = new Tpl(
         [
             '/path/to/templates',
             '/path/to/my_theme',
@@ -78,12 +78,12 @@ override specific templates (or all of them).
 The library will first check the `my_theme` folder for templates, if they are 
 missing there, the search will continue in the preceding folder(s).
 
-# Internationalization
+# Translation
 
     <?php
-    use fkooman\Tpl\Template;
+    use fkooman\Template\Tpl;
 
-    $tpl = new Template(['/path/to/templates'], '/path/to/locale/nl_NL.php');
+    $tpl = new Tpl(['/path/to/templates'], ['/path/to/locale/nl_NL.php']);
     $tpl->render('foo', ['foo' => 'bar']);
 
 In the template you use this:

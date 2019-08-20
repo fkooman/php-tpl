@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-namespace fkooman\Tpl\Exception;
+namespace fkooman\Template\Exception;
 
 use Exception;
 
-class TemplateException extends Exception
+class TplException extends Exception
 {
 }

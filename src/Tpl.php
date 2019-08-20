@@ -22,12 +22,13 @@
  * SOFTWARE.
  */
 
-namespace fkooman\Tpl;
+namespace fkooman\Template;
 
 use DateTime;
-use fkooman\Tpl\Exception\TemplateException;
+use DateTimeZone;
+use fkooman\Template\Exception\TplException;
 
-class Template
+class Tpl
 {
     /** @var array<string> */
     private $templateFolderList;
@@ -67,7 +68,7 @@ class Template
      */
     public function addDefault(array $templateVariables)
     {
-        $this->templateVariables = \array_merge($this->templateVariables, $templateVariables);
+        $this->templateVariables = array_merge($this->templateVariables, $templateVariables);
     }
 
     /**
@@ -89,12 +90,12 @@ class Template
      */
     public function render($templateName, array $templateVariables = [])
     {
-        $this->templateVariables = \array_merge($this->templateVariables, $templateVariables);
-        \extract($this->templateVariables);
-        \ob_start();
+        $this->templateVariables = array_merge($this->templateVariables, $templateVariables);
+        extract($this->templateVariables);
+        ob_start();
         /** @psalm-suppress UnresolvableInclude */
         include $this->templatePath($templateName);
-        $templateStr = \ob_get_clean();
+        $templateStr = ob_get_clean();
         if (0 === \count($this->layoutList)) {
             // we have no layout defined, so simple template...
             return $templateStr;
@@ -127,11 +128,11 @@ class Template
     private function start($sectionName)
     {
         if (null !== $this->activeSectionName) {
-            throw new TemplateException(\sprintf('section "%s" already started', $this->activeSectionName));
+            throw new TplException(sprintf('section "%s" already started', $this->activeSectionName));
         }
 
         $this->activeSectionName = $sectionName;
-        \ob_start();
+        ob_start();
     }
 
     /**
@@ -142,12 +143,12 @@ class Template
     private function stop($sectionName)
     {
         if (null === $this->activeSectionName) {
-            throw new TemplateException('no section started');
+            throw new TplException('no section started');
         }
 
         if ($sectionName !== $this->activeSectionName) {
-            throw new TemplateException(
-                \sprintf(
+            throw new TplException(
+                sprintf(
                     'attempted to end section "%s" but current section is "%s"',
                     $sectionName,
                     $this->activeSectionName
@@ -155,7 +156,7 @@ class Template
             );
         }
 
-        $this->sectionList[$this->activeSectionName] = \ob_get_clean();
+        $this->sectionList[$this->activeSectionName] = ob_get_clean();
         $this->activeSectionName = null;
     }
 
@@ -178,7 +179,7 @@ class Template
     private function section($sectionName)
     {
         if (!\array_key_exists($sectionName, $this->sectionList)) {
-            throw new TemplateException(\sprintf('section "%s" does not exist', $sectionName));
+            throw new TplException(sprintf('section "%s" does not exist', $sectionName));
         }
 
         return $this->sectionList[$sectionName];
@@ -196,7 +197,7 @@ class Template
             $v = $this->batch($v, $cb);
         }
 
-        return \htmlentities($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        return htmlentities($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**
@@ -207,7 +208,7 @@ class Template
      */
     private function batch($v, $cb)
     {
-        $functionList = \explode('|', $cb);
+        $functionList = explode('|', $cb);
         foreach ($functionList as $f) {
             if ('escape' === $f) {
                 $v = $this->e($v);
@@ -217,13 +218,29 @@ class Template
                 $f = $this->callbackList[$f];
             } else {
                 if (!\function_exists($f)) {
-                    throw new TemplateException(\sprintf('function "%s" does not exist', $f));
+                    throw new TplException(sprintf('function "%s" does not exist', $f));
                 }
             }
             $v = \call_user_func($f, $v);
         }
 
         return $v;
+    }
+
+    /**
+     * Format a date.
+     *
+     * @param string $d
+     * @param string $f
+     *
+     * @return string
+     */
+    private function d($d, $f = 'Y-m-d H:i:s')
+    {
+        $dateTime = new DateTime($d);
+        $dateTime->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+
+        return $this->e(date_format($dateTime, $f));
     }
 
     /**
@@ -256,20 +273,7 @@ class Template
             }
         }
 
-        return \str_replace(\array_keys($escapedVars), \array_values($escapedVars), $translatedText);
-    }
-
-    /**
-     * Format a date.
-     *
-     * @param string $dateString
-     * @param string $dateFormat
-     *
-     * @return string
-     */
-    private function d($dateString, $dateFormat)
-    {
-        return $this->e(\date_format(new DateTime($dateString), $dateFormat));
+        return str_replace(array_keys($escapedVars), array_values($escapedVars), $translatedText);
     }
 
     /**
@@ -280,8 +284,8 @@ class Template
     private function exists($templateName)
     {
         foreach ($this->templateFolderList as $templateFolder) {
-            $templatePath = \sprintf('%s/%s.php', $templateFolder, $templateName);
-            if (\file_exists($templatePath)) {
+            $templatePath = sprintf('%s/%s.php', $templateFolder, $templateName);
+            if (file_exists($templatePath)) {
                 return true;
             }
         }
@@ -296,13 +300,13 @@ class Template
      */
     private function templatePath($templateName)
     {
-        foreach (\array_reverse($this->templateFolderList) as $templateFolder) {
-            $templatePath = \sprintf('%s/%s.php', $templateFolder, $templateName);
-            if (\file_exists($templatePath)) {
+        foreach (array_reverse($this->templateFolderList) as $templateFolder) {
+            $templatePath = sprintf('%s/%s.php', $templateFolder, $templateName);
+            if (file_exists($templatePath)) {
                 return $templatePath;
             }
         }
 
-        throw new TemplateException(\sprintf('template "%s" does not exist', $templateName));
+        throw new TplException(sprintf('template "%s" does not exist', $templateName));
     }
 }

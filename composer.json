@@ -7,12 +7,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "fkooman\\Tpl\\": "src/"
+            "fkooman\\Template\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "fkooman\\Tpl\\Tests\\": "tests/"
+            "fkooman\\Template\\Tests\\": "tests/"
         }
     },
     "description": "Very simple native PHP template engine",
