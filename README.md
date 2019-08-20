@@ -9,7 +9,7 @@ time in the future:
 
 - Themes, this is not working 
   [properly](https://github.com/thephpleague/plates/issues/234) in Plates;
-- Internationalization (multi language support)
+- Multi Language support
 
 If you need neither of these features, I recommend you to use Plates.
 
@@ -78,7 +78,7 @@ override specific templates (or all of them).
 The library will first check the `my_theme` folder for templates, if they are 
 missing there, the search will continue in the preceding folder(s).
 
-# Translation
+# Translations
 
     <?php
     use fkooman\Template\Tpl;
@@ -97,6 +97,8 @@ The translation file, i.e. `nl_NL.php` in this example contains this:
     return [
         'Hello %foo%!' => 'Hallo %foo%!'
     ];
+
+You can specify multiple translation files.
 
 # Contact
 
