@@ -1,1 +1,1 @@
-<?=$this->et($key, 8);
+<?=$this->etr($key, 8);

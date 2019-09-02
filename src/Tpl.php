@@ -202,6 +202,8 @@ class Tpl
     }
 
     /**
+     * Trim a string to a specified lenght and escape it.
+     *
      * @param string      $inputString
      * @param int         $maxLen
      * @param string|null $cb
@@ -210,7 +212,7 @@ class Tpl
      *
      * @return string
      */
-    private function et($inputString, $maxLen, $cb = null)
+    private function etr($inputString, $maxLen, $cb = null)
     {
         if ($maxLen < 3) {
             throw new RangeException('"maxLen" must be >= 3');
