@@ -167,6 +167,20 @@ class TplTest extends TestCase
         );
     }
 
+    public function testStringTrim()
+    {
+        $template = new Tpl(
+            [
+                __DIR__.'/tpl',
+            ]
+        );
+
+        $this->assertSame(
+            'This&hellip;med',
+            trim($template->render('tpl20', ['key' => 'ThisIsASomewhatLongerStringThatWillBeTrimmed']))
+        );
+    }
+
     public function testMTranslationMultipleTranslationFiles()
     {
         $template = new Tpl(

@@ -27,6 +27,7 @@ namespace fkooman\Template;
 use DateTime;
 use DateTimeZone;
 use fkooman\Template\Exception\TplException;
+use RangeException;
 
 class Tpl
 {
@@ -198,6 +199,32 @@ class Tpl
         }
 
         return htmlentities($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
+     * @param string      $inputString
+     * @param int         $maxLen
+     * @param string|null $cb
+     *
+     * @throws \RangeException
+     *
+     * @return string
+     */
+    private function et($inputString, $maxLen, $cb = null)
+    {
+        if ($maxLen < 3) {
+            throw new RangeException('"maxLen" must be >= 3');
+        }
+
+        $strLen = mb_strlen($inputString);
+        if ($strLen <= $maxLen) {
+            return $inputString;
+        }
+
+        $partOne = mb_substr($inputString, 0, (int) ceil(($maxLen - 1) / 2));
+        $partTwo = mb_substr($inputString, (int) -floor(($maxLen - 1) / 2));
+
+        return $this->e($partOne.'…'.$partTwo, $cb);
     }
 
     /**
