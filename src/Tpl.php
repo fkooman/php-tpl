@@ -66,12 +66,18 @@ class Tpl
     }
 
     /**
-     * @param string $uiLanguage
+     * @param string|null $uiLanguage
      *
      * @return void
      */
     public function setLanguage($uiLanguage)
     {
+        if (null === $uiLanguage) {
+            $this->uiLanguage = null;
+
+            return;
+        }
+
         // verify whether we have this translation file available
         // NOTE: we first fetch a list of supported languages and *then* only
         // check if the requested language is available to avoid needing to
