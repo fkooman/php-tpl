@@ -83,14 +83,15 @@ missing there, the search will continue in the preceding folder(s).
     <?php
     use fkooman\Template\Tpl;
 
-    $tpl = new Tpl(['/path/to/templates'], ['/path/to/locale/nl_NL.php']);
+    $tpl = new Tpl(['/path/to/templates'], ['/path/to/locale']);
+    $tpl->setUiLanguage('nl-NL');
     $tpl->render('foo', ['foo' => 'bar']);
 
 In the template you use this:
 
     <?=$this->t('Hello %foo%!')?>
 
-The translation file, i.e. `nl_NL.php` in this example contains this:
+The translation file, i.e. `nl-NL.php` in this example contains this:
 
     <?php
 
@@ -98,7 +99,8 @@ The translation file, i.e. `nl_NL.php` in this example contains this:
         'Hello %foo%!' => 'Hallo %foo%!'
     ];
 
-You can specify multiple translation files.
+You can specify multiple translation folder as well. The last one specified 
+has preference.
 
 # Contact
 

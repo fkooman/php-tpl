@@ -35,7 +35,7 @@ class Tpl
     private $templateFolderList;
 
     /** @var array<string> */
-    private $translationFileList;
+    private $translationFolderList;
 
     /** @var string|null */
     private $activeSectionName = null;
@@ -52,14 +52,40 @@ class Tpl
     /** @var array<string,callable> */
     private $callbackList = [];
 
+    /** @var string */
+    private $uiLanguage = 'en-US';
+
     /**
      * @param array<string> $templateFolderList
-     * @param array<string> $translationFileList
+     * @param array<string> $translationFolderList
      */
-    public function __construct(array $templateFolderList, array $translationFileList = [])
+    public function __construct(array $templateFolderList, array $translationFolderList = [])
     {
         $this->templateFolderList = $templateFolderList;
-        $this->translationFileList = $translationFileList;
+        $this->translationFolderList = $translationFolderList;
+    }
+
+    /**
+     * @param string $uiLanguage
+     *
+     * @return void
+     */
+    public function setUiLanguage($uiLanguage)
+    {
+        // verify if we have this translation file available
+        $availableUiLanguages = ['en-US'];
+        foreach ($this->translationFolderList as $translationFolder) {
+            foreach (glob($translationFolder.'/*.php') as $translationFile) {
+                $foundUiLanguage = basename($translationFile, '.php');
+                if (!\in_array($foundUiLanguage, $availableUiLanguages, true)) {
+                    $availableUiLanguages[] = $foundUiLanguage;
+                }
+            }
+        }
+
+        if (\in_array($uiLanguage, $availableUiLanguages, true)) {
+            $this->uiLanguage = $uiLanguage;
+        }
     }
 
     /**
@@ -274,7 +300,8 @@ class Tpl
     {
         // use original, unless it is found in any of the translation files...
         $translatedText = $v;
-        foreach ($this->translationFileList as $translationFile) {
+        foreach ($this->translationFolderList as $translationFolder) {
+            $translationFile = $translationFolder.'/'.$this->uiLanguage.'.php';
             if (!file_exists($translationFile)) {
                 continue;
             }

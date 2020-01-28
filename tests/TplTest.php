@@ -106,12 +106,46 @@ class TplTest extends TestCase
                 __DIR__.'/tpl',
             ],
             [
-                __DIR__.'/locale/nl1.php',
+                __DIR__.'/locale/1',
             ]
         );
-
+        $template->setUiLanguage('nl-NL');
         $this->assertSame(
             'Tekst',
+            trim($template->render('tpl4', []))
+        );
+    }
+
+    public function testTranslationUnsupportedLanguage()
+    {
+        $template = new Tpl(
+            [
+                __DIR__.'/tpl',
+            ],
+            [
+                __DIR__.'/locale/1',
+            ]
+        );
+        $template->setUiLanguage('foo-BAR');
+        $this->assertSame(
+            'Text',
+            trim($template->render('tpl4', []))
+        );
+    }
+
+    public function testTranslationCorruptLanguage()
+    {
+        $template = new Tpl(
+            [
+                __DIR__.'/tpl',
+            ],
+            [
+                __DIR__.'/locale/1',
+            ]
+        );
+        $template->setUiLanguage('../../etc/passwd');
+        $this->assertSame(
+            'Text',
             trim($template->render('tpl4', []))
         );
     }
@@ -123,10 +157,10 @@ class TplTest extends TestCase
                 __DIR__.'/tpl',
             ],
             [
-                __DIR__.'/locale/nl1.php',
+                __DIR__.'/locale/1',
             ]
         );
-
+        $template->setUiLanguage('nl-NL');
         $this->assertSame(
             'Missing',
             trim($template->render('tpl5', []))
@@ -140,10 +174,10 @@ class TplTest extends TestCase
                 __DIR__.'/tpl',
             ],
             [
-                __DIR__.'/locale/nl1.php',
+                __DIR__.'/locale/1',
             ]
         );
-
+        $template->setUiLanguage('nl-NL');
         $this->assertSame(
             'Hallo foo!',
             trim($template->render('tpl6', ['userId' => 'foo']))
@@ -157,10 +191,10 @@ class TplTest extends TestCase
                 __DIR__.'/tpl',
             ],
             [
-                __DIR__.'/locale/nl1.php',
+                __DIR__.'/locale/1',
             ]
         );
-
+        $template->setUiLanguage('nl-NL');
         $this->assertSame(
             'Hallo &lt;/body&gt;!',
             trim($template->render('tpl6', ['userId' => '</body>']))
@@ -188,11 +222,11 @@ class TplTest extends TestCase
                 __DIR__.'/tpl',
             ],
             [
-                __DIR__.'/locale/nl1.php',
-                __DIR__.'/locale/nl2.php',
+                __DIR__.'/locale/1',
+                __DIR__.'/locale/2',
             ]
         );
-
+        $template->setUiLanguage('nl-NL');
         $this->assertSame(
             'Meer Tekst',
             trim($template->render('tpl15', []))
