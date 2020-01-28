@@ -73,8 +73,7 @@ class Tpl
     }
 
     /**
-     * @param string   $callbackName
-     * @param callable $cb
+     * @param string $callbackName
      *
      * @return void
      */
@@ -148,13 +147,7 @@ class Tpl
         }
 
         if ($sectionName !== $this->activeSectionName) {
-            throw new TplException(
-                sprintf(
-                    'attempted to end section "%s" but current section is "%s"',
-                    $sectionName,
-                    $this->activeSectionName
-                )
-            );
+            throw new TplException(sprintf('attempted to end section "%s" but current section is "%s"', $sectionName, $this->activeSectionName));
         }
 
         $this->sectionList[$this->activeSectionName] = ob_get_clean();
@@ -282,14 +275,16 @@ class Tpl
         // use original, unless it is found in any of the translation files...
         $translatedText = $v;
         foreach ($this->translationFileList as $translationFile) {
-            // XXX should we make sure the file exists?
-            /** @psalm-suppress UnresolvableInclude */
+            if (!file_exists($translationFile)) {
+                continue;
+            }
+            /** @var array<string,string> $translationData */
             $translationData = include $translationFile;
             if (\array_key_exists($v, $translationData)) {
-                // translation found!
+                // translation found, run with it, we don't care if we find
+                // it in other file(s) as well!
                 $translatedText = $translationData[$v];
-                // XXX do we want to loop over all of them?! take the first,
-                // or the last?
+
                 break;
             }
         }
