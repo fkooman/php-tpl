@@ -70,20 +70,23 @@ class Tpl
      *
      * @return void
      */
-    public function setUiLanguage($uiLanguage)
+    public function setLanguage($uiLanguage)
     {
-        // verify if we have this translation file available
-        $availableUiLanguages = ['en-US'];
+        // verify whether we have this translation file available
+        // NOTE: we first fetch a list of supported languages and *then* only
+        // check if the requested language is available to avoid needing to
+        // use crazy regexp to match language codes
+        $availableLanguages = ['en-US'];
         foreach ($this->translationFolderList as $translationFolder) {
             foreach (glob($translationFolder.'/*.php') as $translationFile) {
-                $foundUiLanguage = basename($translationFile, '.php');
-                if (!\in_array($foundUiLanguage, $availableUiLanguages, true)) {
-                    $availableUiLanguages[] = $foundUiLanguage;
+                $supportedLanguage = basename($translationFile, '.php');
+                if (!\in_array($supportedLanguage, $availableLanguages, true)) {
+                    $availableLanguages[] = $supportedLanguage;
                 }
             }
         }
 
-        if (\in_array($uiLanguage, $availableUiLanguages, true)) {
+        if (\in_array($uiLanguage, $availableLanguages, true)) {
             $this->uiLanguage = $uiLanguage;
         }
     }
