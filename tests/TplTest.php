@@ -31,7 +31,7 @@ class TplTest extends TestCase
 {
     public function testSimple()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -39,13 +39,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             'value',
-            trim($template->render('tpl1', ['key' => 'value']))
+            trim($tpl->render('tpl1', ['key' => 'value']))
         );
     }
 
     public function testDateFormat()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -53,13 +53,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             '2018-01-01',
-            trim($template->render('tpl14', ['d' => '2018-01-01 09:00:00']))
+            trim($tpl->render('tpl14', ['d' => '2018-01-01 09:00:00']))
         );
     }
 
     public function testEscaping()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -67,13 +67,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             '&lt;/body&gt;',
-            trim($template->render('tpl1', ['key' => '</body>']))
+            trim($tpl->render('tpl1', ['key' => '</body>']))
         );
     }
 
     public function testLayout()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -81,13 +81,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             '<html>Foo</html>',
-            trim($template->render('tpl2', []))
+            trim($tpl->render('tpl2', []))
         );
     }
 
     public function testLayoutWithTemplateVars()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -95,13 +95,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             '<html>barFoo</html>',
-            trim($template->render('tpl3', []))
+            trim($tpl->render('tpl3', []))
         );
     }
 
     public function testTranslation()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -109,16 +109,16 @@ class TplTest extends TestCase
                 __DIR__.'/locale/1',
             ]
         );
-        $template->setLanguage('nl-NL');
+        $tpl->setLanguage('nl-NL');
         $this->assertSame(
             'Tekst',
-            trim($template->render('tpl4', []))
+            trim($tpl->render('tpl4', []))
         );
     }
 
     public function testTranslationUnsupportedLanguage()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -126,16 +126,16 @@ class TplTest extends TestCase
                 __DIR__.'/locale/1',
             ]
         );
-        $template->setLanguage('foo-BAR');
+        $tpl->setLanguage('foo-BAR');
         $this->assertSame(
             'Text',
-            trim($template->render('tpl4', []))
+            trim($tpl->render('tpl4', []))
         );
     }
 
     public function testTranslationCorruptLanguage()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -143,16 +143,16 @@ class TplTest extends TestCase
                 __DIR__.'/locale/1',
             ]
         );
-        $template->setLanguage('../../etc/passwd');
+        $tpl->setLanguage('../../etc/passwd');
         $this->assertSame(
             'Text',
-            trim($template->render('tpl4', []))
+            trim($tpl->render('tpl4', []))
         );
     }
 
     public function testMissingTranslation()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -160,16 +160,16 @@ class TplTest extends TestCase
                 __DIR__.'/locale/1',
             ]
         );
-        $template->setLanguage('nl-NL');
+        $tpl->setLanguage('nl-NL');
         $this->assertSame(
             'Missing',
-            trim($template->render('tpl5', []))
+            trim($tpl->render('tpl5', []))
         );
     }
 
     public function testTranslationVariableSubstitution()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -177,16 +177,16 @@ class TplTest extends TestCase
                 __DIR__.'/locale/1',
             ]
         );
-        $template->setLanguage('nl-NL');
+        $tpl->setLanguage('nl-NL');
         $this->assertSame(
             'Hallo foo!',
-            trim($template->render('tpl6', ['userId' => 'foo']))
+            trim($tpl->render('tpl6', ['userId' => 'foo']))
         );
     }
 
     public function testTranslationEscaping()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -194,16 +194,16 @@ class TplTest extends TestCase
                 __DIR__.'/locale/1',
             ]
         );
-        $template->setLanguage('nl-NL');
+        $tpl->setLanguage('nl-NL');
         $this->assertSame(
             'Hallo &lt;/body&gt;!',
-            trim($template->render('tpl6', ['userId' => '</body>']))
+            trim($tpl->render('tpl6', ['userId' => '</body>']))
         );
     }
 
     public function testStringTrim()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -211,13 +211,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             'This&hellip;med',
-            trim($template->render('tpl20', ['key' => 'ThisIsASomewhatLongerStringThatWillBeTrimmed']))
+            trim($tpl->render('tpl20', ['key' => 'ThisIsASomewhatLongerStringThatWillBeTrimmed']))
         );
     }
 
     public function testMTranslationMultipleTranslationFiles()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ],
@@ -226,10 +226,10 @@ class TplTest extends TestCase
                 __DIR__.'/locale/2',
             ]
         );
-        $template->setLanguage('nl-NL');
+        $tpl->setLanguage('nl-NL');
         $this->assertSame(
             'Meer Tekst',
-            trim($template->render('tpl15', []))
+            trim($tpl->render('tpl15', []))
         );
     }
 
@@ -240,7 +240,7 @@ class TplTest extends TestCase
         // for all templates (and layouts) that are there, they are taken from
         // that folder... if it is missing from the first folder, the next
         // folder is used...
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
                 __DIR__.'/tpl/theme1',
@@ -249,13 +249,13 @@ class TplTest extends TestCase
 
         $this->assertSame(
             '<html><body>Foo</body></html>',
-            trim($template->render('tpl7', []))
+            trim($tpl->render('tpl7', []))
         );
     }
 
     public function testEscapeFunctions()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
@@ -263,74 +263,74 @@ class TplTest extends TestCase
 
         $this->assertSame(
             'VALUE',
-            trim($template->render('tpl8', ['key' => 'value']))
+            trim($tpl->render('tpl8', ['key' => 'value']))
         );
     }
 
     public function testEscapeFunctionRegisteredCallback()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
         );
-        $template->addCallback('my_strrev', function ($v) { return strrev($v); });
+        $tpl->addCallback('my_strrev', function ($v) { return strrev($v); });
 
         $this->assertSame(
             'EULAV',
-            trim($template->render('tpl9', ['key' => 'value']))
+            trim($tpl->render('tpl9', ['key' => 'value']))
         );
     }
 
     public function testEscapeEncode()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
         );
         $this->assertSame(
             'foo%2Bbar',
-            trim($template->render('tpl10', ['key' => 'foo+bar']))
+            trim($tpl->render('tpl10', ['key' => 'foo+bar']))
         );
     }
 
     public function testExists()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
         );
         $this->assertSame(
             'template "tpl11" exists!template "bar11" does NOT exist!',
-            trim($template->render('tpl11', []))
+            trim($tpl->render('tpl11', []))
         );
     }
 
     public function testInsert()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
         );
         $this->assertSame(
             'YES!',
-            trim($template->render('tpl12', []))
+            trim($tpl->render('tpl12', []))
         );
     }
 
     public function testBatch()
     {
-        $template = new Tpl(
+        $tpl = new Tpl(
             [
                 __DIR__.'/tpl',
             ]
         );
         $this->assertSame(
             "foo<br />\nbar&amp;",
-            trim($template->render('tpl13', ['foo' => "foo\nbar&"]))
+            trim($tpl->render('tpl13', ['foo' => "foo\nbar&"]))
         );
     }
 }
