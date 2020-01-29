@@ -94,23 +94,27 @@ return [
     // (and reveal some bugs).
     'strict_method_checking' => true,
 
+    // If enabled, Phan will warn if **any** type of the object expression for a property access
+    // does not contain that property.
+    'strict_object_checking' => true,
+
     // If enabled, Phan will warn if **any** type in the argument's union type
     // cannot be cast to a type in the parameter's expected union type.
     // Setting this to true will introduce numerous false positives
     // (and reveal some bugs).
     'strict_param_checking' => true,
 
-    // If enabled, Phan will warn if **any** type in a returned value's union type
-    // cannot be cast to the declared return type.
-    // Setting this to true will introduce numerous false positives
-    // (and reveal some bugs).
-    'strict_return_checking' => true,
-
     // If enabled, Phan will warn if **any** type in a property assignment's union type
     // cannot be cast to a type in the property's declared union type.
     // Setting this to true will introduce numerous false positives
     // (and reveal some bugs).
     'strict_property_checking' => true,
+
+    // If enabled, Phan will warn if **any** type in a returned value's union type
+    // cannot be cast to the declared return type.
+    // Setting this to true will introduce numerous false positives
+    // (and reveal some bugs).
+    'strict_return_checking' => true,
 
     // If true, seemingly undeclared variables in the global
     // scope will be ignored.
@@ -120,10 +124,13 @@ return [
     'ignore_undeclared_variables_in_global_scope' => false,
 
     // Set this to false to emit `PhanUndeclaredFunction` issues for internal functions that Phan has signatures for,
-    // but aren't available in the codebase, or the internal functions used to run Phan
+    // but aren't available in the codebase, or from Reflection.
     // (may lead to false positives if an extension isn't loaded)
     //
     // If this is true(default), then Phan will not warn.
+    //
+    // Even when this is false, Phan will still infer return values and check parameters of internal functions
+    // if Phan has the signatures.
     'ignore_undeclared_functions_with_known_signatures' => false,
 
     // Backwards Compatibility Checking. This is slow
@@ -215,6 +222,13 @@ return [
     // variables set in branches of loops, and global variables.
     'redundant_condition_detection' => true,
 
+    // If enabled, Phan will act as though it's certain of real return types of a subset of internal functions,
+    // even if those return types aren't available in reflection (real types were taken from php 7.3 or 8.0-dev, depending on target_php_version).
+    //
+    // Note that with php 7 and earlier, php would return null or false for many internal functions if the argument types or counts were incorrect.
+    // As a result, enabling this setting with target_php_version 8.0 may result in false positives for `--redundant-condition-detection` when codebases also support php 7.x.
+    'assume_real_types_for_internal_functions' => true,
+
     // If true, this runs a quick version of checks that takes less
     // time at the cost of not running as thorough
     // of an analysis. You should consider setting this
@@ -246,16 +260,6 @@ return [
     // `string` instead of an `int` as declared.
     'quick_mode' => false,
 
-    // If true, then before analysis, try to simplify AST into a form
-    // which improves Phan's type inference in edge cases.
-    //
-    // This may conflict with `dead_code_detection`.
-    // When this is true, this slows down analysis slightly.
-    //
-    // E.g. rewrites `if ($a = value() && $a > 0) {...}`
-    // into `$a = value(); if ($a) { if ($a > 0) {...}}`
-    'simplify_ast' => true,
-
     // Enable or disable support for generic templated
     // class types.
     'generic_types_enabled' => true,
@@ -286,8 +290,8 @@ return [
     // (e.g. `'@Test\.php$@'`, or `'@vendor/.*/(tests|Tests)/@'`)
     'exclude_file_regex' => '@^vendor/.*/(tests?|Tests?)/@',
 
-    // A file list that defines files that will be excluded
-    // from parsing and analysis and will not be read at all.
+    // A list of files that will be excluded from parsing and analysis
+    // and will not be read at all.
     //
     // This is useful for excluding hopelessly unanalyzable
     // files that can't be removed for whatever reason.
@@ -306,7 +310,6 @@ return [
     //       to `exclude_analysis_directory_list`.
     'exclude_analysis_directory_list' => [
         'vendor/',
-        'tests/tpl/',
     ],
 
     // Enable this to enable checks of require/include statements referring to valid paths.
@@ -350,6 +353,9 @@ return [
         'SleepCheckerPlugin',
         'UnreachableCodePlugin',
         'UseReturnValuePlugin',
+        'EmptyStatementListPlugin',
+        'StrictComparisonPlugin',
+        'LoopVariableReusePlugin',
     ],
 
     // A list of directories that should be parsed for class and
@@ -361,7 +367,6 @@ return [
     // your application should be included in this list.
     'directory_list' => [
         'src',
-        'tests',
         'vendor/phpunit/phpunit/src',
     ],
 
