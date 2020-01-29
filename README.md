@@ -84,7 +84,7 @@ missing there, the search will continue in the preceding folder(s).
     use fkooman\Template\Tpl;
 
     $tpl = new Tpl(['/path/to/templates'], ['/path/to/locale']);
-    $tpl->setUiLanguage('nl-NL');
+    $tpl->setLanguage('nl-NL');
     $tpl->render('foo', ['foo' => 'bar']);
 
 In the template you use this:
