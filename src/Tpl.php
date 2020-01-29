@@ -52,8 +52,8 @@ class Tpl
     /** @var array<string,callable> */
     private $callbackList = [];
 
-    /** @var string|null */
-    private $uiLanguage = null;
+    /** @var array<array<string,string>> */
+    private $translationDataList = [];
 
     /**
      * @param array<string> $templateFolderList
@@ -73,7 +73,7 @@ class Tpl
     public function setLanguage($uiLanguage)
     {
         if (null === $uiLanguage) {
-            $this->uiLanguage = null;
+            $this->translationDataList = [];
 
             return;
         }
@@ -93,7 +93,14 @@ class Tpl
         }
 
         if (\in_array($uiLanguage, $availableLanguages, true)) {
-            $this->uiLanguage = $uiLanguage;
+            // load the translation files
+            foreach ($this->translationFolderList as $translationFolder) {
+                $translationFile = $translationFolder.'/'.$uiLanguage.'.php';
+                if (!file_exists($translationFile)) {
+                    continue;
+                }
+                $this->translationDataList[] = include $translationFile;
+            }
         }
     }
 
@@ -309,21 +316,13 @@ class Tpl
     {
         // use original, unless it is found in any of the translation files...
         $translatedText = $v;
-        if (null !== $uiLanguage = $this->uiLanguage) {
-            foreach ($this->translationFolderList as $translationFolder) {
-                $translationFile = $translationFolder.'/'.$uiLanguage.'.php';
-                if (!file_exists($translationFile)) {
-                    continue;
-                }
-                /** @var array<string,string> $translationData */
-                $translationData = include $translationFile;
-                if (\array_key_exists($v, $translationData)) {
-                    // translation found, run with it, we don't care if we find
-                    // it in other file(s) as well!
-                    $translatedText = $translationData[$v];
+        foreach ($this->translationDataList as $translationData) {
+            if (\array_key_exists($v, $translationData)) {
+                // translation found, run with it, we don't care if we find
+                // it in other file(s) as well!
+                $translatedText = $translationData[$v];
 
-                    break;
-                }
+                break;
             }
         }
 
